@@ -158,7 +158,7 @@ function locat(data){
 // 视图模型
 var viewModel = function(){
 	var _this = this;
-	this.entryContent = ko.observable('');
+	this.inputCont = ko.observable('');
 	this.locationList = ko.observableArray([]);
 	var locations = model.mapLocations();
 	for (var i = 0; i < locations.length; i++) {
@@ -167,13 +167,13 @@ var viewModel = function(){
 	this.currentLoc = ko.observable(this.locationList()[0]);
 
 	// 点击列表名称 对应标记动画
-	this.markerClickFn = function(newLocation) { 
-		locationPosition(locations, newLocation);
+	this.markerClickFn = function(nowLocation) { 
+		locationPosition(locations, nowLocation);
 	};
 
 	this.searchPosition = ko.computed(function(){
 		var res = _this.locationList();
-		var content = _this.entryContent();
+		var content = _this.inputCont();
 		// 搜索内容为无
 		if(!content){
 			return ko.utils.arrayFilter(res,  function(position, index) {
@@ -185,7 +185,7 @@ var viewModel = function(){
 				// 先隐藏所有的标记，并定义输入内容是否有相关字符，状态为false
 				position.marker.hide();
 				var isInclude = false;
-	            if( position.name.indexOf(_this.entryContent()) > -1){
+	            if( position.name.indexOf(_this.inputCont()) > -1){
 	            	// 如果有相关字符，则做对应显示
 	            	position.marker.show();
 	            	isInclude = true;
@@ -219,8 +219,8 @@ var viewModel = function(){
 /* 点击标记后，把地图视觉中心指向当前标记，并弹跳动画 */
 function locationPosition(locations, acLocation) {
 	/*先把所有的清空一下*/
-   	locations.forEach(function(locItem){
-   		locItem.marker.setAnimation(null);
+   	locations.forEach(function(locatIndex){
+   		locatIndex.marker.setAnimation(null);
    	});
     map.centerAndZoom(new BMap.Point(acLocation.location.lng,acLocation.location.lat), 15);
 	acLocation.marker.setAnimation(BMAP_ANIMATION_BOUNCE);
